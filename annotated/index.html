@@ -1,0 +1,83 @@
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="/stylesheet.css">
+</head>
+
+<body>
+  hello
+  <h2>Welcome to Generic App</h2>
+  <p><a href="/babes">View babes JSON</a></p>
+	<!-- 1 - add button -->
+  <button id="fetchem">Fetch Things!</button>
+  <!-- 13 - make button and inputs (discuss placeholder) -->
+  <button id="maker">Add babes</button>
+  <input type="text" id="name" placeholder="name" />
+  <input type="text" id="type" placeholder="type" />
+  <input type="text" id="imgUrl" placeholder="url" />
+	<!-- 2 - in order to append to dom -->
+  <ul id="best-list">
+  </ul>
+</body>
+<!-- 19 - add script to a new file -->
+<script type="text/javascript" src="/index.js" />
+<!-- 3 - add script -->
+<script type="text/javascript">
+	/* 14 - grab element and make listener */
+document.getElementById('maker')
+	.addEventListener('click', (e) => {
+		/* 15 - array destructuring and getting inputs */
+		const [name, type, imgUrl] = document.getElementsByTagName('input')
+		/* 16 - log and note they are DOMElements
+		console.log('!!!!', name, type, imgUrl)
+		*/
+		/* 17 - construct body for POST and log it */
+		const data = JSON.stringify({name: name.value, type: type.value, imgUrl: imgUrl.value})
+		console.log('!!!!', data)
+		/* 18 - construct post with extra object */
+		fetch("/babes", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: data
+		})
+		.then(console.log)
+		.catch(console.error)
+	})
+document.getElementById('fetchem')
+  .addEventListener('click', (e) => {
+  	/* 4 - fetch babes and see response */
+    fetch("/babes")
+    	/* 5 - log it and see it's body is a stream
+    					then talk about `.json` and how it returns a promise */
+      .then(response => response.json())
+      .then(babyNameArr => {
+        /* 10 - grab ul to append to */
+        const list = document.getElementById('best-list');
+        /* 8 - iterate through array */
+        babyNameArr.forEach(baby => {
+
+          /* 9 - create element and form it (template literals) */
+          const li = document.createElement("li");
+          li.append(`${baby.name}-${baby.type} `);
+
+          /* 12 - show amazing cute gifs!!! */ 
+          const img = document.createElement("img");
+          img.src = baby.imgUrl;
+          li.append(img);
+
+          /* 11 - append to list */
+          list.append(li);
+        })
+        /* 6 - log and talk about dev tools timing
+        	console.log(JSON.stringify(babyNameArr))
+        	console.log(babyNameArr)
+        	babyNameArr.shift()
+        */
+        /* 7 - throw error and make sure it is handled 
+	        throw new Error('HAAAALP')
+        */
+      })
+  })
+</script>
